@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="it">
 <head>
   <meta charset="UTF-8">
@@ -9,134 +8,133 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
+  /* ===== BASE ===== */
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    margin: 0 auto;
+    padding: 20px;
+    max-width: 1400px;
+  }
+
+  h1 {
+    margin-bottom: 10px;
+  }
+
+  h2 {
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #222;
+  }
+
+  section {
+    margin-bottom: 40px;
+  }
+
+  /* ===== GRID ===== */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  /* ===== CARD ===== */
+  .card {
+    background: white;
+    padding: 18px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+
+  .card h4 {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+  }
+
+  .card span {
+    font-size: 28px;
+    font-weight: bold;
+    display: block;
+    margin-top: 6px;
+  }
+
+  .card small {
+    color: #777;
+    display: block;
+    margin-top: 6px;
+  }
+
+  /* ===== FILTER ===== */
+  select {
+    padding: 6px;
+    margin-right: 10px;
+  }
+
+  /* ===== TABLE ===== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    margin-top: 10px;
+  }
+
+  th, td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+
+  th {
+    background: #eee;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  td {
+    font-size: 14px;
+  }
+
+  /* ===== CHART ===== */
+  .chart-box {
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .chart-box canvas {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (min-width: 1600px) {
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f9;
-      margin: 0;
-      padding: 20px;
+      max-width: 1600px;
     }
+  }
 
-    h1 {
-      margin-bottom: 10px;
-    }
-
-    section {
-      margin-bottom: 30px;
-    }
-
+  @media (max-width: 1366px) {
     .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 15px;
-    }
-
-    .card {
-      background: white;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    }
-
-    .card h4 {
-      margin: 0;
-      font-size: 14px;
-      color: #555;
+      gap: 16px;
     }
 
     .card span {
-      font-size: 26px;
-      font-weight: bold;
-      display: block;
-      margin-top: 5px;
+      font-size: 24px;
     }
 
-    .card small {
-      color: #777;
+    h2 {
+      font-size: 16px;
     }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-    }
-
-    th, td {
-      padding: 8px;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
-    }
-
-    th {
-      background: #eee;
-    }
-
-    select {
-      padding: 5px;
-      margin-right: 10px;
-    }
-
-    canvas {
-      background: white;
-      border-radius: 8px;
-      padding: 10px;
-    }
-    /* ===== LAYOUT EXECUTIVE ===== */
-
-body {
-  max-width: 1400px;              /* 🔑 per 1366px */
-  margin: 0 auto;
-}
-
-section {
-  margin-bottom: 40px;            /* più aria tra sezioni */
-}
-
-h2 {
-  margin-bottom: 20px;
-  font-size: 18px;
-  font-weight: 600;
-  color: #222;
-}
-
-/* KPI grid più compatta e ordinata */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
-}
-
-/* Card KPI più "solide" */
-.card {
-  padding: 18px;
-}
-
-.card span {
-  font-size: 28px;
-}
-
-.card small {
-  display: block;
-  margin-top: 6px;
-}
-
-/* Tabelle più pulite */
-table {
-  margin-top: 10px;
-}
-
-th {
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-td {
-  font-size: 14px;
-}
-
+  }
   </style>
 </head>
-  
 
 <body>
 
@@ -153,13 +151,13 @@ td {
   </select>
 </section>
 
-<!-- ================= BLOCCO 1 – DATI STRUTTURALI ================= -->
+<!-- ================= DATI STRUTTURALI ================= -->
 <section>
   <h2>Dati Strutturali (NON Filtrabili)</h2>
   <div class="grid" id="structuralCards"></div>
 </section>
 
-<!-- ================= BLOCCO 2 – KPI DINAMICI ================= -->
+<!-- ================= KPI ================= -->
 <section>
   <h2>KPI Commerciali (Filtrabili)</h2>
   <div class="grid">
@@ -184,7 +182,6 @@ td {
 <!-- ================= GRAFICI ================= -->
 <section>
   <h2>Analisi Prenotazioni</h2>
-
   <div class="grid">
     <div class="chart-box">
       <canvas id="channelChart"></canvas>
@@ -198,12 +195,10 @@ td {
 
 <section>
   <h2>Peak Analysis</h2>
-
   <div class="chart-box" style="height:360px">
     <canvas id="timeChart"></canvas>
   </div>
 </section>
-
 
 <!-- ================= TABELLA ================= -->
 <section>
@@ -222,22 +217,31 @@ td {
 </section>
 
 <script>
-/* ================= CARICAMENTO DATI ================= */
-Promise.all([
-  fetch('fleet.json').then(r => r.json()),
-  fetch('utilization.json').then(r => r.json()),
-  fetch('service.json').then(r => r.json()),
-  fetch('incidenti.json').then(r => r.json()),
-  fetch('bookings.json').then(r => r.json())
-]).then(initDashboard);
+/* ===== GLOBAL ===== */
+Chart.defaults.maintainAspectRatio = false;
+
+const COLORS = {
+  primary: "#1f3c88",
+  secondary: "#4f81bd",
+  accent: "#f28e2b"
+};
 
 let charts = {};
 
+/* ===== LOAD DATA ===== */
+Promise.all([
+  fetch("fleet.json").then(r => r.json()),
+  fetch("utilization.json").then(r => r.json()),
+  fetch("service.json").then(r => r.json()),
+  fetch("incidenti.json").then(r => r.json()),
+  fetch("bookings.json").then(r => r.json())
+]).then(initDashboard);
+
+/* ===== INIT ===== */
 function initDashboard([fleet, utilization, service, incidents, bookings]) {
 
-  /* ================= BLOCCO STRUTTURALE ================= */
-  const structural = document.getElementById('structuralCards');
-
+  /* ---- Structural ---- */
+  const structural = document.getElementById("structuralCards");
   structural.innerHTML += card("Flotta Totale", fleet.length);
 
   utilization.forEach(b => {
@@ -247,66 +251,85 @@ function initDashboard([fleet, utilization, service, incidents, bookings]) {
     );
   });
 
-  const avgOcc = utilization.reduce((s,b)=>s+b.Occupation,0)/utilization.length;
-  structural.innerHTML += card("Occupazione Media", (avgOcc*100).toFixed(1)+"%");
+  const avgOcc =
+    utilization.reduce((s, b) => s + b.Occupation, 0) / utilization.length;
 
-  /* ================= FILTRI ================= */
+  structural.innerHTML += card(
+    "Occupazione Media",
+    (avgOcc * 100).toFixed(1) + "%"
+  );
+
+  /* ---- Filters ---- */
   populateFilter("branchFilter", [...new Set(bookings.map(b => b.Branch))]);
   populateFilter("agentFilter", [...new Set(bookings.map(b => b.Agent))]);
 
-  document.getElementById("branchFilter").onchange = apply;
-  document.getElementById("agentFilter").onchange = apply;
+  branchFilter.onchange = applyFilters;
+  agentFilter.onchange = applyFilters;
 
-  function apply() {
-    let filtered = bookings.filter(b =>
+  function applyFilters() {
+    const filtered = bookings.filter(b =>
       (!branchFilter.value || b.Branch === branchFilter.value) &&
       (!agentFilter.value || b.Agent === agentFilter.value)
     );
+
     updateKPIs(filtered, incidents);
     updateCharts(filtered);
     updateTable(filtered);
   }
 
-  apply();
+  applyFilters();
 
-  /* ================= FUNZIONI ================= */
-
+  /* ---- KPI ---- */
   function updateKPIs(data, incidents) {
-    const revenue = data.reduce((s,b)=>s+(b.Revenue||0),0);
-    document.getElementById("revenueTotal").textContent = "€ " + revenue.toFixed(2);
-    document.getElementById("bookingTotal").textContent = data.length;
+    const revenue = data.reduce((s, b) => s + (b.Revenue || 0), 0);
+    revenueTotal.textContent = "€ " + revenue.toFixed(2);
+    bookingTotal.textContent = data.length;
 
-    const days = new Set(data.map(b=>b.Date)).size || 1;
-    document.getElementById("revenueDay").textContent =
-      "€ " + (revenue/days).toFixed(2) + " / giorno";
+    const days = new Set(data.map(b => b.Date)).size || 1;
+    revenueDay.textContent =
+      "€ " + (revenue / days).toFixed(2) + " / giorno";
 
-    const incidentCost = incidents.reduce((s,i)=>s+(i["Total price"]||0),0);
-    document.getElementById("incidentTotal").textContent = "€ " + incidentCost.toFixed(2);
+    const incidentCost = incidents.reduce(
+      (s, i) => s + (i["Total price"] || 0), 0
+    );
+    incidentTotal.textContent = "€ " + incidentCost.toFixed(2);
   }
 
+  /* ---- Charts ---- */
   function updateCharts(data) {
     destroyCharts();
 
-    charts.channel = pieChart("channelChart", groupCount(data,"Channel"), "Prenotazioni per Canale");
-    charts.provider = barChart("providerChart", groupCount(data,"Provider"), "Prenotazioni per Provider");
+    charts.channel = donutChart(
+      "channelChart",
+      groupCount(data, "Channel"),
+      "Prenotazioni per Canale"
+    );
+
+    charts.provider = barChart(
+      "providerChart",
+      groupCount(data, "Provider"),
+      "Prenotazioni per Provider"
+    );
 
     charts.time = lineChart("timeChart", data);
   }
 
+  /* ---- Table ---- */
   function updateTable(data) {
-    const tbody = document.getElementById("performanceTable");
-    tbody.innerHTML = "";
+    performanceTable.innerHTML = "";
     const grouped = {};
 
     data.forEach(b => {
-      const k = b.Branch+"|"+b.Agent;
-      grouped[k] = grouped[k] || {Branch:b.Branch,Agent:b.Agent,Revenue:0,Count:0};
-      grouped[k].Revenue += b.Revenue||0;
-      grouped[k].Count++;
+      const key = b.Branch + "|" + b.Agent;
+      if (!grouped[key]) {
+        grouped[key] = { Branch: b.Branch, Agent: b.Agent, Revenue: 0, Count: 0 };
+      }
+      grouped[key].Revenue += b.Revenue || 0;
+      grouped[key].Count++;
     });
 
     Object.values(grouped).forEach(r => {
-      tbody.innerHTML += `
+      performanceTable.innerHTML += `
         <tr>
           <td>${r.Branch}</td>
           <td>${r.Agent}</td>
@@ -317,103 +340,95 @@ function initDashboard([fleet, utilization, service, incidents, bookings]) {
   }
 }
 
-/* ================= UTILITIES ================= */
-
-function card(title,value){
+/* ===== UTIL ===== */
+function card(title, value) {
   return `<div class="card"><h4>${title}</h4><span>${value}</span></div>`;
 }
 
-function populateFilter(id, values){
+function populateFilter(id, values) {
   const el = document.getElementById(id);
-  values.sort().forEach(v=>{
-    if(v) el.innerHTML += `<option>${v}</option>`;
+  values.filter(Boolean).sort().forEach(v => {
+    el.innerHTML += `<option value="${v}">${v}</option>`;
   });
 }
 
-function groupCount(data,key){
-  return data.reduce((o,b)=>{
-    o[b[key]] = (o[b[key]]||0)+1;
+function groupCount(data, key) {
+  return data.reduce((o, b) => {
+    o[b[key]] = (o[b[key]] || 0) + 1;
     return o;
-  },{});
+  }, {});
 }
 
-function destroyCharts(){
-  Object.values(charts).forEach(c=>c.destroy());
+function destroyCharts() {
+  Object.values(charts).forEach(c => c && c.destroy());
 }
 
-function pieChart(id, data, label){
+/* ===== CHARTS ===== */
+function donutChart(id, data, title) {
   const labels = Object.keys(data);
   const values = Object.values(data);
-
   const colors = labels.map(l =>
-    l.toLowerCase().includes("walk")
-      ? COLORS.accent
-      : COLORS.secondary
+    l.toLowerCase().includes("walk") ? COLORS.accent : COLORS.secondary
   );
 
-  return new Chart(document.getElementById(id),{
-    type:"doughnut",
-    data:{
+  return new Chart(document.getElementById(id), {
+    type: "doughnut",
+    data: {
       labels,
-      datasets:[{
+      datasets: [{
         data: values,
         backgroundColor: colors,
-        borderWidth: labels.map(l =>
-          l.toLowerCase().includes("walk") ? 2 : 1
-        ),
-        borderColor: "#fff"
+        borderColor: "#fff",
+        borderWidth: 1
       }]
     },
-    options:{
-      plugins:{
-        title:{display:true,text:label},
-        legend:{position:"bottom"}
+    options: {
+      plugins: {
+        title: { display: true, text: title },
+        legend: { position: "bottom" }
       }
     }
   });
 }
 
-
-function barChart(id,data,label){
-  return new Chart(document.getElementById(id),{
-    type:"bar",
-    data:{
-      labels:Object.keys(data),
-      datasets:[{
-        data:Object.values(data),
+function barChart(id, data, title) {
+  return new Chart(document.getElementById(id), {
+    type: "bar",
+    data: {
+      labels: Object.keys(data),
+      datasets: [{
+        data: Object.values(data),
         backgroundColor: COLORS.primary
       }]
     },
-    options:{
-      plugins:{
-        title:{display:true,text:label},
-        legend:{display:false}
+    options: {
+      plugins: {
+        title: { display: true, text: title },
+        legend: { display: false }
       }
     }
   });
 }
-/* ===== RESPONSIVE EXECUTIVE ===== */
 
-@media (min-width: 1600px) {
-  body {
-    max-width: 1600px;   /* per 1920px */
-  }
+function lineChart(id, data) {
+  const daily = {};
+  data.forEach(b => {
+    daily[b.Date] = (daily[b.Date] || 0) + 1;
+  });
+
+  return new Chart(document.getElementById(id), {
+    type: "line",
+    data: {
+      labels: Object.keys(daily),
+      datasets: [{
+        label: "Prenotazioni",
+        data: Object.values(daily),
+        borderColor: COLORS.primary,
+        fill: false
+      }]
+    }
+  });
 }
-
-@media (max-width: 1366px) {
-  .grid {
-    gap: 16px;
-  }
-
-  .card span {
-    font-size: 24px;
-  }
-
-  h2 {
-    font-size: 16px;
-  }
-}
-
 </script>
 
 </body>
