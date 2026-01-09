@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard Performance – Dicembre 2025</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+<header class="topbar">
+  <div>
+    <h1>Performance Dashboard</h1>
+    <p>Dicembre 2025 → 4 Gennaio 2026</p>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- =========================
+       BLOCCO 1 – STRUTTURALE
+  ========================== -->
+  <section>
+    <h2 class="section-title">Struttura Operativa (valori fissi)</h2>
+
+    <!-- Occupazione per Branch -->
+    <div class="grid kpi-grid">
+      <div class="kpi-card">
+        <span class="kpi-title">ROMA TERMINI</span>
+        <span class="kpi-value">51%</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-title">CASSINO</span>
+        <span class="kpi-value">46%</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-title">NAPOLI CAPODICHINO</span>
+        <span class="kpi-value">41%</span>
+      </div>
+      <!-- altre branch -->
+    </div>
+
+    <!-- Media + Flotta -->
+    <div class="grid">
+      <div class="kpi-card wide">
+        <span class="kpi-title">Occupazione media</span>
+        <span class="kpi-value">41%</span>
+      </div>
+
+      <div class="kpi-card wide">
+        <span class="kpi-title">Flotta totale</span>
+        <span class="kpi-value">374 veicoli</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================
+       FILTRI (placeholder)
+  ========================== -->
+  <section class="filters">
+    <h2 class="section-title">Filtri</h2>
+
+    <div class="filter-row">
+      <div class="filter-box">Intervallo date</div>
+      <div class="filter-box">Branch Office</div>
+      <div class="filter-box">Agente</div>
+      <div class="filter-actions">
+        <button class="btn">Reset</button>
+        <button class="btn primary">Applica</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================
+       BLOCCO 2 – KPI DINAMICI
+  ========================== -->
+  <section>
+    <h2 class="section-title">Performance Economica e Operativa</h2>
+
+    <div class="grid">
+      <div class="kpi-card">
+        <span class="kpi-title">Revenue</span>
+        <span class="kpi-value">€ 185.420</span>
+        <span class="kpi-sub">€ 62 / day</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-title">Ancillaries</span>
+        <span class="kpi-value">€ 23.810</span>
+        <span class="kpi-sub">€ 8 / day</span>
+        <span class="kpi-sub strong">Incidenti: € 12.150</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-title">Prenotazioni</span>
+        <span class="kpi-value">2.985</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-title">Flotta operativa</span>
+        <span class="kpi-value">374</span>
+        <span class="kpi-sub">In service: 42</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================
+       GRAFICI (placeholder)
+  ========================== -->
+  <section>
+    <h2 class="section-title">Analisi</h2>
+
+    <div class="grid">
+      <div class="chart-box">Donut – Prenotazioni per canale</div>
+      <div class="chart-box">Bar – % Prenotazioni per provider</div>
+    </div>
+
+    <div class="grid">
+      <div class="chart-box">Pie – Flotta per provider</div>
+      <div class="chart-box">Bar – Manutenzione per tipologia</div>
+    </div>
+
+    <div class="chart-box full">
+      Line chart – Prenotazioni 01/12 → 04/01 (Peak analysis)
+    </div>
+  </section>
+
+  <!-- =========================
+       TABELLA
+  ========================== -->
+  <section>
+    <h2 class="section-title">Branch Office × Agente</h2>
+
+    <div class="table-box">
+      Tabella – Branch | Agente | Revenue | Ancillaries
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  Dashboard uso manageriale – Dati Dicembre 2025
+</footer>
+
+</body>
+</html>
