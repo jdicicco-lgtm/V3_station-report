@@ -1,0 +1,147 @@
+[
+ {
+  "Car": "GP764BH",
+  "Branch Office": "Cassino",
+  "Type": "Tagliando Ordinario"
+ },
+ {
+  "Car": "GF969TB",
+  "Branch Office": "Cassino",
+  "Type": "Tagliando Straordinario "
+ },
+ {
+  "Car": "GN033SE",
+  "Branch Office": "Cassino",
+  "Type": "Tagliando Straordinario "
+ },
+ {
+  "Car": "GV247AK",
+  "Branch Office": "Brindisi",
+  "Type": "Carrozzeria"
+ },
+ {
+  "Car": "GL427WT",
+  "Branch Office": "Cassino",
+  "Type": "Tagliando Straordinario "
+ },
+ {
+  "Car": "GL428WT",
+  "Branch Office": "Cassino",
+  "Type": "Tagliando Ordinario"
+ },
+ {
+  "Car": "GJ265LD",
+  "Branch Office": "Trapani Aeroporto",
+  "Type": "Rifornimento"
+ },
+ {
+  "Car": "GT687VW",
+  "Branch Office": "Cassino",
+  "Type": "Carrozzeria"
+ },
+ {
+  "Car": "GS031FE",
+  "Branch Office": "Brindisi",
+  "Type": "Carrozzeria"
+ },
+ {
+  "Car": "GN400EY",
+  "Branch Office": "Roma Fiumicino ",
+  "Type": "Tagliando Straordinario "
+ },
+ {
+  "Car": "GR979BD",
+  "Branch Office": "Brindisi",
+  "Type": "Carrozzeria"
+ },
+ {
+  "Car": "GR490PB",
+  "Branch Office": "Cassino",
+  "Type": "Tagliando Ordinario"
+ },
+ {
+  "Car": "HA896JN",
+  "Branch Office": "Cassino",
+  "Type": "Tagliando Ordinario"
+ },
+ {
+  "Car": "GH616VL",
+  "Branch Office": "Trapani Aeroporto",
+  "Type": "Tagliando Straordinario "
+ },
+ {
+  "Car": "GJ265LD",
+  "Branch Office": "Trapani Aeroporto",
+  "Type": "Tagliando Straordinario "
+ },
+ {
+  "Car": "GJ345LD",
+  "Branch Office": "Trapani Aeroporto",
+  "Type": "Tagliando Straordinario "
+ },
+ {
+  "Car": "GA779CX",
+  "Branch Office": "Trapani Aeroporto",
+  "Type": "Tagliando Ordinario"
+ },
+ {
+  "Car": "HA914FS",
+  "Branch Office": "Cassino",
+  "Type": "Tagliando Ordinario"
+ },
+ {
+  "Car": "GA278CV",
+  "Branch Office": "Trapani Aeroporto",
+  "Type": "Tagliando Ordinario"
+ },
+ {
+  "Car": "GN568MS",
+  "Branch Office": "Roma Fiumicino ",
+  "Type": "Tagliando Straordinario "
+ },
+ {
+  "Car": "GL422WT",
+  "Branch Office": "Cassino",
+  "Type": "Carrozzeria"
+ },
+ {
+  "Car": "HA898JN",
+  "Branch Office": "Cassino",
+  "Type": "Carrozzeria"
+ },
+ {
+  "Car": "HA751VY",
+  "Branch Office": "Roma Fiumicino ",
+  "Type": "Carrozzeria"
+ },
+ {
+  "Car": "GM694JH",
+  "Branch Office": "Cassino",
+  "Type": "BuyBack"
+ },
+ {
+  "Car": "HA726VY",
+  "Branch Office": "Cassino",
+  "Type": "Cambio Gomme"
+ },
+ {
+  "Car": "GS342EA",
+  "Branch Office": "Cassino",
+  "Type": "BuyBack"
+ },
+ {
+  "Car": "GJ344LD",
+  "Branch Office": "Trapani Aeroporto",
+  "Type": "Tagliando Straordinario "
+ },
+ {
+  "Car": "GL425WT",
+  "Branch Office": "Cassino",
+  "Type": "BuyBack"
+ },
+ {
+  "Car": "GL426WT",
+  "Branch Office": "Cassino",
+  "Type": "BuyBack"
+ }
+]

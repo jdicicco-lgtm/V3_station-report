@@ -1,0 +1,316 @@
+[
+ {
+  "Booking": 22975,
+  "Incident date": "01\/04\/2026",
+  "Creation date": "01\/04\/2026",
+  "Car": "HA916FS",
+  "Incident type": "Carrozzeria",
+  "Total price": 115,
+  "Created by": "Martina"
+ },
+ {
+  "Booking": 22943,
+  "Incident date": "01\/03\/2026",
+  "Creation date": "01\/03\/2026",
+  "Car": "GX648BX",
+  "Incident type": "Carrozzeria",
+  "Total price": 150,
+  "Created by": "Pier"
+ },
+ {
+  "Booking": 22703,
+  "Incident date": "01\/03\/2026",
+  "Creation date": "01\/03\/2026",
+  "Car": "HA788VY",
+  "Incident type": "Fanaleria",
+  "Total price": 120,
+  "Created by": "Martina"
+ },
+ {
+  "Booking": 22080,
+  "Incident date": "01\/02\/2026",
+  "Creation date": "01\/03\/2026",
+  "Car": "GV796GS",
+  "Incident type": "Carrozzeria",
+  "Total price": 255,
+  "Created by": "Giuseppe"
+ },
+ {
+  "Booking": 22702,
+  "Incident date": "12\/31\/2026",
+  "Creation date": "01\/02\/2026",
+  "Car": "HA696VY",
+  "Incident type": "Carrozzeria",
+  "Total price": 375,
+  "Created by": "Giuseppe"
+ },
+ {
+  "Booking": 22444,
+  "Incident date": "01\/02\/2026",
+  "Creation date": "01\/02\/2026",
+  "Car": "GS342EA",
+  "Incident type": "Carrozzeria",
+  "Total price": 0,
+  "Created by": "Lavinia"
+ },
+ {
+  "Booking": 22444,
+  "Incident date": "01\/01\/2026",
+  "Creation date": "01\/02\/2026",
+  "Car": "GS342EA",
+  "Incident type": "Carrozzeria",
+  "Total price": 819.67,
+  "Created by": "l.cappucci"
+ },
+ {
+  "Booking": 22035,
+  "Incident date": "01\/01\/2026",
+  "Creation date": "01\/02\/2026",
+  "Car": "HA751VY",
+  "Incident type": "Carrozzeria",
+  "Total price": 819.67,
+  "Created by": "Giorgia"
+ },
+ {
+  "Booking": 22652,
+  "Incident date": "01\/02\/2026",
+  "Creation date": "01\/02\/2026",
+  "Car": "HA916FS",
+  "Incident type": "Carrozzeria",
+  "Total price": 105,
+  "Created by": "Martina"
+ },
+ {
+  "Booking": 22573,
+  "Incident date": "01\/01\/2026",
+  "Creation date": "01\/01\/2026",
+  "Car": "HA911FS",
+  "Incident type": "Carrozzeria",
+  "Total price": 190,
+  "Created by": "Giorgia"
+ },
+ {
+  "Booking": 22551,
+  "Incident date": "01\/01\/2026",
+  "Creation date": "01\/01\/2026",
+  "Car": "HA565FT",
+  "Incident type": "Carrozzeria",
+  "Total price": 152.5,
+  "Created by": "Chiara"
+ },
+ {
+  "Booking": 22777,
+  "Incident date": "12\/31\/2025",
+  "Creation date": "12\/31\/2025",
+  "Car": "HA898JN",
+  "Incident type": "Carrozzeria",
+  "Total price": 819.67,
+  "Created by": "Lavinia"
+ },
+ {
+  "Booking": 22559,
+  "Incident date": "12\/30\/2025",
+  "Creation date": "12\/30\/2025",
+  "Car": "HA492FT",
+  "Incident type": "Carrozzeria",
+  "Total price": 160,
+  "Created by": "Martina"
+ },
+ {
+  "Booking": 22528,
+  "Incident date": "12\/25\/2025",
+  "Creation date": "12\/29\/2025",
+  "Car": "HA556FT",
+  "Incident type": "Carrozzeria",
+  "Total price": 125,
+  "Created by": "Giorgia"
+ },
+ {
+  "Booking": 21346,
+  "Incident date": "12\/27\/2025",
+  "Creation date": "12\/29\/2025",
+  "Car": "HA455FT",
+  "Incident type": "Carrozzeria",
+  "Total price": 409.83,
+  "Created by": "Lavinia"
+ },
+ {
+  "Booking": 22609,
+  "Incident date": "12\/29\/2025",
+  "Creation date": "12\/29\/2025",
+  "Car": "HA507FS",
+  "Incident type": "Carrozzeria",
+  "Total price": 0,
+  "Created by": "Martina"
+ },
+ {
+  "Booking": 21060,
+  "Incident date": "12\/27\/2025",
+  "Creation date": "12\/28\/2025",
+  "Car": "GN796WN",
+  "Incident type": "Guasto",
+  "Total price": 395,
+  "Created by": "Fadi"
+ },
+ {
+  "Booking": 22141,
+  "Incident date": "12\/25\/2025",
+  "Creation date": "12\/26\/2025",
+  "Car": "HA544FT",
+  "Incident type": "Carrozzeria",
+  "Total price": 390,
+  "Created by": "Giuseppe"
+ },
+ {
+  "Booking": 22398,
+  "Incident date": "12\/26\/2025",
+  "Creation date": "12\/26\/2025",
+  "Car": "HA269JJ",
+  "Incident type": "Carrozzeria",
+  "Total price": 0,
+  "Created by": "Giusy "
+ },
+ {
+  "Booking": 21775,
+  "Incident date": "12\/21\/2025",
+  "Creation date": "12\/21\/2025",
+  "Car": "GV249AK",
+  "Incident type": "Carrozzeria",
+  "Total price": 310,
+  "Created by": "Giorgia"
+ },
+ {
+  "Booking": 21338,
+  "Incident date": "12\/19\/2025",
+  "Creation date": "12\/19\/2025",
+  "Car": "GK977MF",
+  "Incident type": "Carrozzeria",
+  "Total price": 260,
+  "Created by": "Giuseppe"
+ },
+ {
+  "Booking": 22033,
+  "Incident date": "12\/18\/2025",
+  "Creation date": "12\/19\/2025",
+  "Car": "GP473AL",
+  "Incident type": "Carrozzeria",
+  "Total price": 390,
+  "Created by": "Giuseppe"
+ },
+ {
+  "Booking": 21916,
+  "Incident date": "12\/19\/2025",
+  "Creation date": "12\/19\/2025",
+  "Car": "GV229SX",
+  "Incident type": "Carrozzeria",
+  "Total price": 270,
+  "Created by": "Giuseppe"
+ },
+ {
+  "Booking": 21950,
+  "Incident date": "12\/13\/2025",
+  "Creation date": "12\/17\/2025",
+  "Car": "GJ184TK",
+  "Incident type": "Fanaleria",
+  "Total price": 81.96,
+  "Created by": "Lavinia"
+ },
+ {
+  "Booking": 21481,
+  "Incident date": "12\/05\/2025",
+  "Creation date": "12\/17\/2025",
+  "Car": "HA248JJ",
+  "Incident type": "Carrozzeria",
+  "Total price": 245.9,
+  "Created by": "Lavinia"
+ },
+ {
+  "Booking": 21850,
+  "Incident date": "12\/10\/2025",
+  "Creation date": "12\/12\/2025",
+  "Car": "GV239AK",
+  "Incident type": "Carrozzeria",
+  "Total price": 180,
+  "Created by": "Maurizio"
+ },
+ {
+  "Booking": 21785,
+  "Incident date": "12\/11\/2025",
+  "Creation date": "12\/11\/2025",
+  "Car": "GT421PS",
+  "Incident type": "Vetri",
+  "Total price": 0,
+  "Created by": "Martina"
+ },
+ {
+  "Booking": 21785,
+  "Incident date": "12\/11\/2025",
+  "Creation date": "12\/11\/2025",
+  "Car": "GT421PS",
+  "Incident type": "Vetri",
+  "Total price": 0,
+  "Created by": "Martina"
+ },
+ {
+  "Booking": 21496,
+  "Incident date": "12\/07\/2025",
+  "Creation date": "12\/07\/2025",
+  "Car": "GN796WN",
+  "Incident type": "Carrozzeria",
+  "Total price": 229,
+  "Created by": "Fadi"
+ },
+ {
+  "Booking": 13240,
+  "Incident date": "12\/05\/2025",
+  "Creation date": "12\/06\/2025",
+  "Car": "GX150CM",
+  "Incident type": "Carrozzeria",
+  "Total price": 245,
+  "Created by": "c.pepe@vivarent.it"
+ },
+ {
+  "Booking": 21297,
+  "Incident date": "11\/29\/2025",
+  "Creation date": "12\/02\/2025",
+  "Car": "GX648BX",
+  "Incident type": "Fanaleria",
+  "Total price": 245.9,
+  "Created by": "Lavinia"
+ },
+ {
+  "Booking": 20463,
+  "Incident date": "12\/01\/2025",
+  "Creation date": "12\/01\/2025",
+  "Car": "GT836PE",
+  "Incident type": "Vetri",
+  "Total price": 1215,
+  "Created by": "Giusy "
+ },
+ {
+  "Booking": 20463,
+  "Incident date": "12\/01\/2025",
+  "Creation date": "12\/01\/2025",
+  "Car": "GT836PE",
+  "Incident type": "Vetri",
+  "Total price": 1215,
+  "Created by": "Giusy "
+ },
+ {
+  "Booking": 20730,
+  "Incident date": "12\/01\/2025",
+  "Creation date": "12\/01\/2025",
+  "Car": "GS172JF",
+  "Incident type": "Vetri",
+  "Total price": 1215,
+  "Created by": "Giusy "
+ },
+ {
+  "Incident date": "12\/01\/2025",
+  "Creation date": "12\/01\/2025",
+  "Car": "GS172JF",
+  "Incident type": "Vetri",
+  "Total price": 1215,
+  "Created by": "Giusy "
+ }
+]
