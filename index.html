@@ -1,15 +1,15 @@
 <!doctype html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dashboard Performance – Dicembre 2025</title>
+  <meta charset="utf-8">
+  <title>Performance Dashboard – Dicembre 2025</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="./styles.css">
 </head>
 
 <body>
@@ -23,128 +23,129 @@
 
 <main class="container">
 
-  <!-- =========================
-       BLOCCO 1 – STRUTTURALE
-  ========================== -->
+  <!-- STRUTTURA OPERATIVA -->
   <section>
-    <h2 class="section-title">Struttura Operativa (valori fissi)</h2>
+    <h2>Struttura Operativa (valori fissi)</h2>
 
-    <!-- Occupazione per Branch -->
     <div class="grid kpi-grid">
       <div class="kpi-card">
-        <span class="kpi-title">ROMA TERMINI</span>
-        <span class="kpi-value">51%</span>
+        <span>ROMA TERMINI</span>
+        <strong>51%</strong>
       </div>
       <div class="kpi-card">
-        <span class="kpi-title">CASSINO</span>
-        <span class="kpi-value">46%</span>
+        <span>CASSINO</span>
+        <strong>46%</strong>
       </div>
       <div class="kpi-card">
-        <span class="kpi-title">NAPOLI CAPODICHINO</span>
-        <span class="kpi-value">41%</span>
+        <span>NAPOLI CAPODICHINO</span>
+        <strong>41%</strong>
       </div>
-      <!-- altre branch -->
     </div>
 
-    <!-- Media + Flotta -->
-    <div class="grid">
-      <div class="kpi-card wide">
-        <span class="kpi-title">Occupazione media</span>
-        <span class="kpi-value">41%</span>
+    <div class="grid two-col">
+      <div class="card">
+        <h3>Occupazione media</h3>
+        <div class="big-number">41%</div>
       </div>
-
-      <div class="kpi-card wide">
-        <span class="kpi-title">Flotta totale</span>
-        <span class="kpi-value">374 veicoli</span>
+      <div class="card">
+        <h3>Flotta totale</h3>
+        <div class="big-number">374</div>
+        <small>veicoli</small>
       </div>
     </div>
   </section>
 
-  <!-- =========================
-       FILTRI (placeholder)
-  ========================== -->
-  <section class="filters">
-    <h2 class="section-title">Filtri</h2>
-
-    <div class="filter-row">
-      <div class="filter-box">Intervallo date</div>
-      <div class="filter-box">Branch Office</div>
-      <div class="filter-box">Agente</div>
-      <div class="filter-actions">
-        <button class="btn">Reset</button>
-        <button class="btn primary">Applica</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- =========================
-       BLOCCO 2 – KPI DINAMICI
-  ========================== -->
+  <!-- FILTRI -->
   <section>
-    <h2 class="section-title">Performance Economica e Operativa</h2>
+    <h2>Filtri</h2>
+    <div class="filters">
+      <input placeholder="Intervallo date">
+      <input placeholder="Branch Office">
+      <input placeholder="Agente">
+      <button class="btn">Reset</button>
+      <button class="btn primary">Applica</button>
+    </div>
+  </section>
 
-    <div class="grid">
-      <div class="kpi-card">
-        <span class="kpi-title">Revenue</span>
-        <span class="kpi-value">€ 185.420</span>
-        <span class="kpi-sub">€ 62 / day</span>
+  <!-- KPI DINAMICI -->
+  <section>
+    <h2>Performance Economica e Operativa</h2>
+
+    <div class="grid four-col">
+      <div class="card">
+        <h3>Revenue</h3>
+        <div class="big-number">€185.420</div>
+        <small>€62 / day</small>
       </div>
 
-      <div class="kpi-card">
-        <span class="kpi-title">Ancillaries</span>
-        <span class="kpi-value">€ 23.810</span>
-        <span class="kpi-sub">€ 8 / day</span>
-        <span class="kpi-sub strong">Incidenti: € 12.150</span>
+      <div class="card">
+        <h3>Ancillaries</h3>
+        <div class="big-number">€23.810</div>
+        <small>€8 / day</small>
+        <small class="alert">Incidenti: €12.150</small>
       </div>
 
-      <div class="kpi-card">
-        <span class="kpi-title">Prenotazioni</span>
-        <span class="kpi-value">2.985</span>
+      <div class="card">
+        <h3>Prenotazioni</h3>
+        <div class="big-number">2.985</div>
       </div>
 
-      <div class="kpi-card">
-        <span class="kpi-title">Flotta operativa</span>
-        <span class="kpi-value">374</span>
-        <span class="kpi-sub">In service: 42</span>
+      <div class="card">
+        <h3>Flotta operativa</h3>
+        <div class="big-number">374</div>
+        <small>In service: 42</small>
       </div>
     </div>
   </section>
 
-  <!-- =========================
-       GRAFICI (placeholder)
-  ========================== -->
+  <!-- ANALISI -->
   <section>
-    <h2 class="section-title">Analisi</h2>
+    <h2>Analisi</h2>
 
-    <div class="grid">
-      <div class="chart-box">Donut – Prenotazioni per canale</div>
-      <div class="chart-box">Bar – % Prenotazioni per provider</div>
+    <div class="grid two-col">
+      <div class="chart-placeholder">Donut – Prenotazioni per canale</div>
+      <div class="chart-placeholder">Bar – % Prenotazioni per provider</div>
+      <div class="chart-placeholder">Pie – Flotta per provider</div>
+      <div class="chart-placeholder">Bar – Manutenzione per tipologia</div>
     </div>
 
-    <div class="grid">
-      <div class="chart-box">Pie – Flotta per provider</div>
-      <div class="chart-box">Bar – Manutenzione per tipologia</div>
-    </div>
-
-    <div class="chart-box full">
+    <div class="chart-placeholder full">
       Line chart – Prenotazioni 01/12 → 04/01 (Peak analysis)
     </div>
   </section>
 
-  <!-- =========================
-       TABELLA
-  ========================== -->
+  <!-- TABELLA -->
   <section>
-    <h2 class="section-title">Branch Office × Agente</h2>
-
-    <div class="table-box">
-      Tabella – Branch | Agente | Revenue | Ancillaries
-    </div>
+    <h2>Branch Office × Agente</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Branch Office</th>
+          <th>Agente</th>
+          <th>Revenue</th>
+          <th>Ancillaries</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ROMA TERMINI</td>
+          <td>Rossi</td>
+          <td>€45.000</td>
+          <td>€6.200</td>
+        </tr>
+        <tr>
+          <td>CASSINO</td>
+          <td>Bianchi</td>
+          <td>€32.800</td>
+          <td>€4.100</td>
+        </tr>
+      </tbody>
+    </table>
   </section>
 
 </main>
 
-<footer class="footer">
+<footer>
   Dashboard uso manageriale – Dati Dicembre 2025
 </footer>
 
