@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="it">
 <head>
   <meta charset="UTF-8">
@@ -79,8 +80,63 @@
       border-radius: 8px;
       padding: 10px;
     }
+    /* ===== LAYOUT EXECUTIVE ===== */
+
+body {
+  max-width: 1400px;              /* 🔑 per 1366px */
+  margin: 0 auto;
+}
+
+section {
+  margin-bottom: 40px;            /* più aria tra sezioni */
+}
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+}
+
+/* KPI grid più compatta e ordinata */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+/* Card KPI più "solide" */
+.card {
+  padding: 18px;
+}
+
+.card span {
+  font-size: 28px;
+}
+
+.card small {
+  display: block;
+  margin-top: 6px;
+}
+
+/* Tabelle più pulite */
+table {
+  margin-top: 10px;
+}
+
+th {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+td {
+  font-size: 14px;
+}
+
   </style>
 </head>
+  
 
 <body>
 
@@ -128,16 +184,26 @@
 <!-- ================= GRAFICI ================= -->
 <section>
   <h2>Analisi Prenotazioni</h2>
+
   <div class="grid">
-    <canvas id="channelChart"></canvas>
-    <canvas id="providerChart"></canvas>
+    <div class="chart-box">
+      <canvas id="channelChart"></canvas>
+    </div>
+
+    <div class="chart-box">
+      <canvas id="providerChart"></canvas>
+    </div>
   </div>
 </section>
 
 <section>
   <h2>Peak Analysis</h2>
-  <canvas id="timeChart"></canvas>
+
+  <div class="chart-box" style="height:360px">
+    <canvas id="timeChart"></canvas>
+  </div>
 </section>
+
 
 <!-- ================= TABELLA ================= -->
 <section>
@@ -275,36 +341,79 @@ function destroyCharts(){
   Object.values(charts).forEach(c=>c.destroy());
 }
 
-function pieChart(id,data,label){
+function pieChart(id, data, label){
+  const labels = Object.keys(data);
+  const values = Object.values(data);
+
+  const colors = labels.map(l =>
+    l.toLowerCase().includes("walk")
+      ? COLORS.accent
+      : COLORS.secondary
+  );
+
   return new Chart(document.getElementById(id),{
     type:"doughnut",
-    data:{labels:Object.keys(data),datasets:[{data:Object.values(data)}]},
-    options:{plugins:{title:{display:true,text:label}}}
+    data:{
+      labels,
+      datasets:[{
+        data: values,
+        backgroundColor: colors,
+        borderWidth: labels.map(l =>
+          l.toLowerCase().includes("walk") ? 2 : 1
+        ),
+        borderColor: "#fff"
+      }]
+    },
+    options:{
+      plugins:{
+        title:{display:true,text:label},
+        legend:{position:"bottom"}
+      }
+    }
   });
 }
+
 
 function barChart(id,data,label){
   return new Chart(document.getElementById(id),{
     type:"bar",
-    data:{labels:Object.keys(data),datasets:[{data:Object.values(data)}]},
-    options:{plugins:{title:{display:true,text:label}}}
-  });
-}
-
-function lineChart(id,data){
-  const daily = {};
-  data.forEach(b=>{
-    daily[b.Date] = (daily[b.Date]||0)+1;
-  });
-
-  return new Chart(document.getElementById(id),{
-    type:"line",
     data:{
-      labels:Object.keys(daily),
-      datasets:[{label:"Prenotazioni",data:Object.values(daily)}]
+      labels:Object.keys(data),
+      datasets:[{
+        data:Object.values(data),
+        backgroundColor: COLORS.primary
+      }]
+    },
+    options:{
+      plugins:{
+        title:{display:true,text:label},
+        legend:{display:false}
+      }
     }
   });
 }
+/* ===== RESPONSIVE EXECUTIVE ===== */
+
+@media (min-width: 1600px) {
+  body {
+    max-width: 1600px;   /* per 1920px */
+  }
+}
+
+@media (max-width: 1366px) {
+  .grid {
+    gap: 16px;
+  }
+
+  .card span {
+    font-size: 24px;
+  }
+
+  h2 {
+    font-size: 16px;
+  }
+}
+
 </script>
 
 </body>
