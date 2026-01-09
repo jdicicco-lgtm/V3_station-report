@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Performance – Dicembre 2025</title>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    section {
+      margin-bottom: 30px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+    }
+
+    .card {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .card h4 {
+      margin: 0;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .card span {
+      font-size: 26px;
+      font-weight: bold;
+      display: block;
+      margin-top: 5px;
+    }
+
+    .card small {
+      color: #777;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background: #eee;
+    }
+
+    select {
+      padding: 5px;
+      margin-right: 10px;
+    }
+
+    canvas {
+      background: white;
+      border-radius: 8px;
+      padding: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>Dashboard Performance – Dicembre 2025</h1>
+
+<!-- ================= FILTRI ================= -->
+<section>
+  <select id="branchFilter">
+    <option value="">Tutti i Branch</option>
+  </select>
+
+  <select id="agentFilter">
+    <option value="">Tutti gli Agenti</option>
+  </select>
+</section>
+
+<!-- ================= BLOCCO 1 – DATI STRUTTURALI ================= -->
+<section>
+  <h2>Dati Strutturali (NON Filtrabili)</h2>
+  <div class="grid" id="structuralCards"></div>
+</section>
+
+<!-- ================= BLOCCO 2 – KPI DINAMICI ================= -->
+<section>
+  <h2>KPI Commerciali (Filtrabili)</h2>
+  <div class="grid">
+    <div class="card">
+      <h4>Revenue Totale</h4>
+      <span id="revenueTotal">–</span>
+      <small id="revenueDay"></small>
+    </div>
+
+    <div class="card">
+      <h4>Prenotazioni</h4>
+      <span id="bookingTotal">–</span>
+    </div>
+
+    <div class="card">
+      <h4>Incidenti (€)</h4>
+      <span id="incidentTotal">–</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GRAFICI ================= -->
+<section>
+  <h2>Analisi Prenotazioni</h2>
+  <div class="grid">
+    <canvas id="channelChart"></canvas>
+    <canvas id="providerChart"></canvas>
+  </div>
+</section>
+
+<section>
+  <h2>Peak Analysis</h2>
+  <canvas id="timeChart"></canvas>
+</section>
+
+<!-- ================= TABELLA ================= -->
+<section>
+  <h2>Performance Operativa</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Branch</th>
+        <th>Agente</th>
+        <th>Revenue</th>
+        <th>Prenotazioni</th>
+      </tr>
+    </thead>
+    <tbody id="performanceTable"></tbody>
+  </table>
+</section>
+
+<script>
+/* ================= CARICAMENTO DATI ================= */
+Promise.all([
+  fetch('fleet.json').then(r => r.json()),
+  fetch('utilization.json').then(r => r.json()),
+  fetch('service.json').then(r => r.json()),
+  fetch('incidenti.json').then(r => r.json()),
+  fetch('bookings.json').then(r => r.json())
+]).then(initDashboard);
+
+let charts = {};
+
+function initDashboard([fleet, utilization, service, incidents, bookings]) {
+
+  /* ================= BLOCCO STRUTTURALE ================= */
+  const structural = document.getElementById('structuralCards');
+
+  structural.innerHTML += card("Flotta Totale", fleet.length);
+
+  utilization.forEach(b => {
+    structural.innerHTML += card(
+      `Occupazione ${b["Branch Offices"]}`,
+      (b.Occupation * 100).toFixed(1) + "%"
+    );
+  });
+
+  const avgOcc = utilization.reduce((s,b)=>s+b.Occupation,0)/utilization.length;
+  structural.innerHTML += card("Occupazione Media", (avgOcc*100).toFixed(1)+"%");
+
+  /* ================= FILTRI ================= */
+  populateFilter("branchFilter", [...new Set(bookings.map(b => b.Branch))]);
+  populateFilter("agentFilter", [...new Set(bookings.map(b => b.Agent))]);
+
+  document.getElementById("branchFilter").onchange = apply;
+  document.getElementById("agentFilter").onchange = apply;
+
+  function apply() {
+    let filtered = bookings.filter(b =>
+      (!branchFilter.value || b.Branch === branchFilter.value) &&
+      (!agentFilter.value || b.Agent === agentFilter.value)
+    );
+    updateKPIs(filtered, incidents);
+    updateCharts(filtered);
+    updateTable(filtered);
+  }
+
+  apply();
+
+  /* ================= FUNZIONI ================= */
+
+  function updateKPIs(data, incidents) {
+    const revenue = data.reduce((s,b)=>s+(b.Revenue||0),0);
+    document.getElementById("revenueTotal").textContent = "€ " + revenue.toFixed(2);
+    document.getElementById("bookingTotal").textContent = data.length;
+
+    const days = new Set(data.map(b=>b.Date)).size || 1;
+    document.getElementById("revenueDay").textContent =
+      "€ " + (revenue/days).toFixed(2) + " / giorno";
+
+    const incidentCost = incidents.reduce((s,i)=>s+(i["Total price"]||0),0);
+    document.getElementById("incidentTotal").textContent = "€ " + incidentCost.toFixed(2);
+  }
+
+  function updateCharts(data) {
+    destroyCharts();
+
+    charts.channel = pieChart("channelChart", groupCount(data,"Channel"), "Prenotazioni per Canale");
+    charts.provider = barChart("providerChart", groupCount(data,"Provider"), "Prenotazioni per Provider");
+
+    charts.time = lineChart("timeChart", data);
+  }
+
+  function updateTable(data) {
+    const tbody = document.getElementById("performanceTable");
+    tbody.innerHTML = "";
+    const grouped = {};
+
+    data.forEach(b => {
+      const k = b.Branch+"|"+b.Agent;
+      grouped[k] = grouped[k] || {Branch:b.Branch,Agent:b.Agent,Revenue:0,Count:0};
+      grouped[k].Revenue += b.Revenue||0;
+      grouped[k].Count++;
+    });
+
+    Object.values(grouped).forEach(r => {
+      tbody.innerHTML += `
+        <tr>
+          <td>${r.Branch}</td>
+          <td>${r.Agent}</td>
+          <td>€ ${r.Revenue.toFixed(2)}</td>
+          <td>${r.Count}</td>
+        </tr>`;
+    });
+  }
+}
+
+/* ================= UTILITIES ================= */
+
+function card(title,value){
+  return `<div class="card"><h4>${title}</h4><span>${value}</span></div>`;
+}
+
+function populateFilter(id, values){
+  const el = document.getElementById(id);
+  values.sort().forEach(v=>{
+    if(v) el.innerHTML += `<option>${v}</option>`;
+  });
+}
+
+function groupCount(data,key){
+  return data.reduce((o,b)=>{
+    o[b[key]] = (o[b[key]]||0)+1;
+    return o;
+  },{});
+}
+
+function destroyCharts(){
+  Object.values(charts).forEach(c=>c.destroy());
+}
+
+function pieChart(id,data,label){
+  return new Chart(document.getElementById(id),{
+    type:"doughnut",
+    data:{labels:Object.keys(data),datasets:[{data:Object.values(data)}]},
+    options:{plugins:{title:{display:true,text:label}}}
+  });
+}
+
+function barChart(id,data,label){
+  return new Chart(document.getElementById(id),{
+    type:"bar",
+    data:{labels:Object.keys(data),datasets:[{data:Object.values(data)}]},
+    options:{plugins:{title:{display:true,text:label}}}
+  });
+}
+
+function lineChart(id,data){
+  const daily = {};
+  data.forEach(b=>{
+    daily[b.Date] = (daily[b.Date]||0)+1;
+  });
+
+  return new Chart(document.getElementById(id),{
+    type:"line",
+    data:{
+      labels:Object.keys(daily),
+      datasets:[{label:"Prenotazioni",data:Object.values(daily)}]
+    }
+  });
+}
+</script>
+
+</body>
+</html>
