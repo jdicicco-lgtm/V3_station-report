@@ -6,6 +6,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
+/* ================== THEME ================== */
 body{
   font-family:"Segoe UI",Arial,sans-serif;
   margin:0 auto;
@@ -14,25 +15,84 @@ body{
   background:linear-gradient(180deg,#f2f5f9,#e9edf3);
   color:#1f2937;
 }
-h1{font-size:26px}
+h1{font-size:26px;margin-bottom:10px}
 h2{margin:30px 0 15px;font-size:18px;font-weight:600}
 section{margin-bottom:36px}
+
+/* ================== FILTER BAR ================== */
 .filter-bar{
-  display:flex;gap:10px;flex-wrap:wrap;
-  background:#fff;padding:14px;border-radius:12px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  padding:14px;
+  background:#ffffffcc;
+  border-radius:12px;
+  box-shadow:0 4px 14px rgba(0,0,0,.06);
 }
-select,input[type=date]{padding:8px;border-radius:8px;border:1px solid #d1d5db}
+select,input[type=date]{
+  padding:8px 10px;
+  border-radius:8px;
+  border:1px solid #d1d5db;
+  font-size:13px;
+}
+
+/* ================== GRID / CARDS ================== */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;
+}
+.card{
+  background:#fff;
+  padding:18px;
+  border-radius:14px;
+  box-shadow:0 8px 24px rgba(0,0,0,.06);
+}
+.card h4{
+  margin:0;
+  font-size:13px;
+  color:#6b7280;
+}
+.card span{
+  font-size:26px;
+  font-weight:700;
+  display:block;
+  margin-top:6px;
+}
+.card small{
+  font-size:12px;
+  color:#6b7280;
+}
+
+/* ================== CHART ================== */
 .chart-box{
-  background:#fff;padding:14px;border-radius:14px;
+  background:#fff;
+  padding:14px;
+  border-radius:14px;
   box-shadow:0 8px 24px rgba(0,0,0,.06);
   height:420px;
 }
+
+/* ================== TABLE ================== */
 table{
-  width:100%;border-collapse:collapse;background:#fff;
-  border-radius:14px;overflow:hidden;
+  width:100%;
+  border-collapse:collapse;
+  background:#fff;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 8px 24px rgba(0,0,0,.06);
 }
-th,td{padding:12px;border-bottom:1px solid #e5e7eb}
-th{background:#f3f6fb;font-size:12px;text-transform:uppercase}
+th,td{
+  padding:12px;
+  border-bottom:1px solid #e5e7eb;
+  font-size:14px;
+}
+th{
+  background:#f3f6fb;
+  text-transform:uppercase;
+  font-size:12px;
+  letter-spacing:.04em;
+}
 </style>
 </head>
 
@@ -40,11 +100,29 @@ th{background:#f3f6fb;font-size:12px;text-transform:uppercase}
 
 <h1>Dashboard Performance – Dicembre 2025</h1>
 
+<!-- ================== FILTRI ================== -->
 <section class="filter-bar">
   <label>Da</label><input type="date" id="fromDate">
   <label>A</label><input type="date" id="toDate">
 </section>
 
+<!-- ================== FLOTTA STRUTTURALE ================== -->
+<section>
+<h2>Flotta – Dati Strutturali</h2>
+<div class="grid" id="fleetCards"></div>
+</section>
+
+<!-- ================== KPI COMMERCIALI ================== -->
+<section>
+<h2>KPI Commerciali</h2>
+<div class="grid">
+  <div class="card"><h4>Revenue Totale</h4><span id="kpiRevenue">–</span></div>
+  <div class="card"><h4>Prenotazioni</h4><span id="kpiBookings">–</span></div>
+  <div class="card"><h4>Ancillaries</h4><span id="kpiAnc">–</span></div>
+</div>
+</section>
+
+<!-- ================== PEAK ANALYSIS ================== -->
 <section>
 <h2>Peak Analysis – Domanda vs Flotta</h2>
 <div class="chart-box">
@@ -52,6 +130,7 @@ th{background:#f3f6fb;font-size:12px;text-transform:uppercase}
 </div>
 </section>
 
+<!-- ================== PERFORMANCE OPERATIVA ================== -->
 <section>
 <h2>Performance Operativa per Branch</h2>
 <table>
@@ -69,134 +148,227 @@ th{background:#f3f6fb;font-size:12px;text-transform:uppercase}
 </section>
 
 <script>
-Chart.defaults.maintainAspectRatio=false;
-const COLORS={primary:"#1f3c88",secondary:"#4f81bd",fleet:"#9ca3af"};
-let peakChart;
+/* ================== CONFIG ================== */
+Chart.defaults.maintainAspectRatio = false;
 
+const COLORS = {
+  primary:"#1f3c88",
+  secondary:"#4f81bd",
+  fleet:"#9ca3af"
+};
+
+let peakChart = null;
+
+/* ================== LOAD DATA ================== */
 Promise.all([
   fetch("fleet.json").then(r=>r.json()),
+  fetch("utilization.json").then(r=>r.json()),
   fetch("service.json").then(r=>r.json()),
   fetch("bookings.json").then(r=>r.json())
-]).then(init);
+]).then(init).catch(err=>{
+  console.error("Errore caricamento dati:", err);
+});
 
+/* ================== UTILS ================== */
 function parseDateTime(dt){
+  if(!dt) return null;
   const [d,t]=dt.split(" ");
   const [dd,mm,yyyy]=d.split("/");
   const [hh,min]=t.split(":");
   return new Date(yyyy,mm-1,dd,hh,min);
 }
 
-function getMinDate(arr){ return new Date(Math.min(...arr.map(d=>d.getTime()))); }
-function getMaxDate(arr){ return new Date(Math.max(...arr.map(d=>d.getTime()))); }
+function getMinDate(dates){
+  return new Date(Math.min(...dates.map(d=>d.getTime())));
+}
+function getMaxDate(dates){
+  return new Date(Math.max(...dates.map(d=>d.getTime())));
+}
 
 function buildDailySeries(bookings,from,to){
-  const out={};
+  const map={};
   const cur=new Date(from);
   while(cur<=to){
-    const k=cur.toISOString().slice(0,10);
-    out[k]={count:0,revenue:0};
+    map[cur.toISOString().slice(0,10)]={count:0,revenue:0};
     cur.setDate(cur.getDate()+1);
   }
   bookings.forEach(b=>{
     const k=b.date.toISOString().slice(0,10);
-    if(out[k]){
-      out[k].count++;
-      out[k].revenue+=b.revenue;
+    if(map[k]){
+      map[k].count++;
+      map[k].revenue+=b.revenue;
     }
   });
-  return out;
+  return map;
 }
 
-function movingAverage(arr,w){
+function movingAverage(arr,window){
   return arr.map((_,i)=>{
-    const s=arr.slice(Math.max(0,i-w+1),i+1);
+    const s=arr.slice(Math.max(0,i-window+1),i+1);
     return s.reduce((a,b)=>a+b,0)/s.length;
   });
 }
 
-function init([fleet,service,raw]){
-  const fleetAvailable=fleet.length-service.length;
+/* ================== INIT ================== */
+function init([fleet,util,service,rawBookings]){
 
-  const bookings=raw.map(b=>({
-    branch:b["brach office"],
-    revenue:+b.revenue||0,
-    date:parseDateTime(b.from)
-  }));
+  /* ---- FLOTTA STRUTTURALE ---- */
+  fleetCards.innerHTML += card("Flotta Totale", fleet.length);
 
-  fromDate.onchange=apply;
-  toDate.onchange=apply;
+  util.forEach(u=>{
+    fleetCards.innerHTML += `
+      <div class="card">
+        <h4>${u["Branch Offices"]}</h4>
+        <span>${(u.Occupation*100).toFixed(1)}%</span>
+        <small>Occupazione</small>
+      </div>`;
+  });
+
+  const avgOcc = util.reduce((s,u)=>s+u.Occupation,0)/util.length;
+  fleetCards.innerHTML += `
+    <div class="card">
+      <h4>Occupazione Media</h4>
+      <span>${(avgOcc*100).toFixed(1)}%</span>
+    </div>`;
+
+  /* ---- FLOTTA DISPONIBILE ---- */
+  const fleetAvailable = Math.max(0, fleet.length - service.length);
+
+  /* ---- NORMALIZZA BOOKINGS ---- */
+  const bookings = rawBookings.map(b=>({
+    branch: b["brach office"],
+    revenue: Number(b.revenue||0),
+    anc: Number(b["Ancillaries vendute"]||0),
+    date: parseDateTime(b.from)
+  })).filter(b=>b.date);
+
+  fromDate.onchange = apply;
+  toDate.onchange = apply;
+
+  apply();
 
   function apply(){
-    const f=bookings.filter(b=>{
-      if(fromDate.value && b.date<new Date(fromDate.value)) return false;
-      if(toDate.value && b.date>new Date(toDate.value)) return false;
+    const filtered = bookings.filter(b=>{
+      if(fromDate.value && b.date < new Date(fromDate.value)) return false;
+      if(toDate.value && b.date > new Date(toDate.value)) return false;
       return true;
     });
 
-    updatePeak(f,fleetAvailable);
-    updateTable(f);
+    updateKPIs(filtered);
+    updatePeak(filtered, fleetAvailable);
+    updateTable(filtered);
+  }
+}
+
+/* ================== KPI ================== */
+function updateKPIs(d){
+  const rev = d.reduce((s,b)=>s+b.revenue,0);
+  const anc = d.reduce((s,b)=>s+b.anc,0);
+
+  kpiRevenue.textContent = "€ " + rev.toFixed(2);
+  kpiBookings.textContent = d.length;
+  kpiAnc.textContent = "€ " + anc.toFixed(2);
+}
+
+/* ================== PEAK ANALYSIS ================== */
+function updatePeak(d, fleetAvailable){
+  if(peakChart){
+    peakChart.destroy();
+    peakChart = null;
   }
 
-  apply();
-}
+  if(!d || d.length === 0){
+    return;
+  }
 
-function updatePeak(d,fleetAvailable){
-  if(peakChart) peakChart.destroy();
-  if(d.length===0) return;
+  const dates = d.map(b=>b.date);
+  const from = fromDate.value ? new Date(fromDate.value) : getMinDate(dates);
+  const to   = toDate.value   ? new Date(toDate.value)   : getMaxDate(dates);
 
-  const from=fromDate.value ? new Date(fromDate.value) : getMinDate(d.map(b=>b.date));
-  const to=toDate.value ? new Date(toDate.value) : getMaxDate(d.map(b=>b.date));
+  const daily = buildDailySeries(d, from, to);
+  const labels = Object.keys(daily);
+  const counts = labels.map(k=>daily[k].count);
+  const revenues = labels.map(k=>daily[k].revenue);
+  const ma7 = movingAverage(counts,7);
+  const fleetLine = labels.map(()=>fleetAvailable);
 
-  const daily=buildDailySeries(d,from,to);
-  const labels=Object.keys(daily);
-  const counts=labels.map(k=>daily[k].count);
-  const revenues=labels.map(k=>daily[k].revenue);
-  const ma7=movingAverage(counts,7);
-  const fleetLine=labels.map(()=>fleetAvailable);
-
-  peakChart=new Chart(peakChart,{
-    type:"line",
-    data:{
-      labels,
-      datasets:[
-        {label:"Prenotazioni",data:counts,borderColor:COLORS.primary,tension:.3},
-        {label:"Media mobile 7gg",data:ma7,borderColor:COLORS.secondary,borderDash:[6,4]},
-        {label:"Flotta disponibile",data:fleetLine,borderColor:COLORS.fleet,borderDash:[3,3]}
-      ]
-    },
-    options:{
-      plugins:{
-        tooltip:{
-          callbacks:{
-            afterBody:(ctx)=>"Revenue: € "+revenues[ctx[0].dataIndex].toFixed(2)
+  peakChart = new Chart(
+    document.getElementById("peakChart"),
+    {
+      type:"line",
+      data:{
+        labels,
+        datasets:[
+          {
+            label:"Prenotazioni",
+            data:counts,
+            borderColor:COLORS.primary,
+            tension:0.3
+          },
+          {
+            label:"Media mobile 7gg",
+            data:ma7,
+            borderColor:COLORS.secondary,
+            borderDash:[6,4]
+          },
+          {
+            label:"Flotta disponibile",
+            data:fleetLine,
+            borderColor:COLORS.fleet,
+            borderDash:[3,3]
+          }
+        ]
+      },
+      options:{
+        scales:{ y:{beginAtZero:true} },
+        plugins:{
+          tooltip:{
+            callbacks:{
+              afterBody:(ctx)=>{
+                const i=ctx[0].dataIndex;
+                return "Revenue: € " + revenues[i].toFixed(2);
+              }
+            }
           }
         }
-      },
-      scales:{y:{beginAtZero:true}}
+      }
     }
+  );
+}
+
+/* ================== TABLE ================== */
+function updateTable(d){
+  perfTable.innerHTML = "";
+  if(d.length === 0) return;
+
+  const totalRev = d.reduce((s,b)=>s+b.revenue,0);
+  const grouped = {};
+
+  d.forEach(b=>{
+    grouped[b.branch] = grouped[b.branch] || {count:0,rev:0};
+    grouped[b.branch].count++;
+    grouped[b.branch].rev += b.revenue;
+  });
+
+  Object.entries(grouped).forEach(([branch,v])=>{
+    perfTable.innerHTML += `
+      <tr>
+        <td>${branch}</td>
+        <td>${v.count}</td>
+        <td>€ ${v.rev.toFixed(2)}</td>
+        <td>€ ${(v.rev/v.count).toFixed(2)}</td>
+        <td>${((v.rev/totalRev)*100).toFixed(1)}%</td>
+      </tr>`;
   });
 }
 
-function updateTable(d){
-  perfTable.innerHTML="";
-  const total=d.reduce((s,b)=>s+b.revenue,0);
-  const g={};
-
-  d.forEach(b=>{
-    g[b.branch]=g[b.branch]||{c:0,r:0};
-    g[b.branch].c++; g[b.branch].r+=b.revenue;
-  });
-
-  Object.entries(g).forEach(([k,v])=>{
-    perfTable.innerHTML+=`
-      <tr>
-        <td>${k}</td>
-        <td>${v.c}</td>
-        <td>€ ${v.r.toFixed(2)}</td>
-        <td>€ ${(v.r/v.c).toFixed(2)}</td>
-        <td>${((v.r/total)*100).toFixed(1)}%</td>
-      </tr>`;
-  });
+/* ================== CARD ================== */
+function card(title,value){
+  return `
+    <div class="card">
+      <h4>${title}</h4>
+      <span>${value}</span>
+    </div>`;
 }
 </script>
 
