@@ -283,63 +283,62 @@ function updatePeak(d,fleetAvailable){
   const ma7=movingAverage(counts,7);
   const fleetLine=labels.map(()=>fleetAvailable);
 
-  charts.peak = new Chart(
-  document.getElementById("peakChart"),
-  {
-    type: "line",
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: "Prenotazioni",
-          data: counts,
-          borderColor: COLORS.primary,
-          tension: 0.3
-        },
-        {
-          label: "Media mobile 7gg",
-          data: ma7,
-          borderColor: COLORS.secondary,
-          borderDash: [6, 4]
-        },
-        {
-          label: "Flotta disponibile",
-          data: fleetLine,
-          borderColor: COLORS.grey,
-          borderDash: [3, 3]
-        },
-        {
-          label: "Revenue (hidden)",
-          data: revenues,
-          hidden: true
-        }
-      ]
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true,
-          grace: "30%",
-          ticks: {
-            precision: 0
+    charts.peak = new Chart(
+    document.getElementById("peakChart"),
+    {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "Prenotazioni",
+            data: counts,
+            borderColor: COLORS.primary,
+            tension: 0.3
+          },
+          {
+            label: "Media mobile 7gg",
+            data: ma7,
+            borderColor: COLORS.secondary,
+            borderDash: [6, 4]
+          },
+          {
+            label: "Flotta disponibile",
+            data: fleetLine,
+            borderColor: COLORS.grey,
+            borderDash: [3, 3]
+          },
+          {
+            label: "Revenue (hidden)",
+            data: revenues,
+            hidden: true
           }
-        }
+        ]
       },
-      plugins: {
-        tooltip: {
-          callbacks: {
-            afterBody: function (ctx) {
-              const i = ctx[0].dataIndex;
-              const revenue =
-                ctx[0].chart.data.datasets[3].data[i] || 0;
-              return "Revenue: € " + revenue.toFixed(2);
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            grace: "30%",
+            ticks: { precision: 0 }
+          }
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              afterBody: function (ctx) {
+                const i = ctx[0].dataIndex;
+                const revenue =
+                  ctx[0].chart.data.datasets[3].data[i] || 0;
+                return "Revenue: € " + revenue.toFixed(2);
+              }
             }
           }
         }
       }
     }
-  }
-);
+  );
+} // ✅ FINE updatePeak()
 
 function updateTable(d){
   perfTable.innerHTML="";
@@ -366,6 +365,30 @@ function updateTable(d){
   });
 }
 
+function updateTable(d){
+  perfTable.innerHTML="";
+  if(d.length===0) return;
+
+  const total=d.reduce((s,b)=>s+b.revenue,0);
+  const g={};
+
+  d.forEach(b=>{
+    g[b.branch]=g[b.branch]||{c:0,r:0};
+    g[b.branch].c++;
+    g[b.branch].r+=b.revenue;
+  });
+
+  Object.entries(g).forEach(([k,v])=>{
+    perfTable.innerHTML+=`
+      <tr>
+        <td>${k}</td>
+        <td>${v.c}</td>
+        <td>€ ${v.r.toFixed(2)}</td>
+        <td>€ ${(v.r/v.c).toFixed(2)}</td>
+        <td>${((v.r/total)*100).toFixed(1)}%</td>
+      </tr>`;
+  });
+}
 function card(t,v){
   return `<div class="card"><h4>${t}</h4><span>${v}</span></div>`;
 }
