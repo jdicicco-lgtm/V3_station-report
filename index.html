@@ -38,7 +38,6 @@ th{background:#f0f2f6;font-size:13px;text-transform:uppercase}
 
 <h1>Dashboard Performance – Dicembre 2025</h1>
 
-<!-- FILTRI COMMERCIALI -->
 <section>
   <label>Da</label><input type="date" id="fromDate">
   <label>A</label><input type="date" id="toDate">
@@ -46,7 +45,6 @@ th{background:#f0f2f6;font-size:13px;text-transform:uppercase}
   <select id="agentFilter"><option value="">Tutti gli Agenti</option></select>
 </section>
 
-<!-- ================= FLOTTA (STRUTTURALE) ================= -->
 <section>
 <h2>Flotta – Dati Strutturali</h2>
 <div class="grid" id="fleetCards"></div>
@@ -62,7 +60,6 @@ th{background:#f0f2f6;font-size:13px;text-transform:uppercase}
 <div class="chart-box"><canvas id="serviceChart"></canvas></div>
 </section>
 
-<!-- ================= KPI COMMERCIALI ================= -->
 <section>
 <h2>KPI Commerciali (Filtrabili)</h2>
 <div class="grid">
@@ -74,7 +71,6 @@ th{background:#f0f2f6;font-size:13px;text-transform:uppercase}
 </div>
 </section>
 
-<!-- ================= ANALISI ================= -->
 <section>
 <h2>Analisi Prenotazioni</h2>
 <div class="grid">
@@ -88,7 +84,6 @@ th{background:#f0f2f6;font-size:13px;text-transform:uppercase}
 <div class="chart-box large"><canvas id="chartTime"></canvas></div>
 </section>
 
-<!-- ================= TABELLA ================= -->
 <section>
 <h2>Performance Operativa</h2>
 <table>
@@ -112,39 +107,52 @@ Promise.all([
   fetch("bookings.json").then(r=>r.json())
 ]).then(init);
 
-function parseDate(d){
-  if(!d) return null;
-  const p=d.split("/");
-  return new Date(p[2],p[1]-1,p[0]);
+function parseDateTime(dt){
+  if(!dt) return null;
+  const [d,t]=dt.split(" ");
+  const [dd,mm,yyyy]=d.split("/");
+  const [hh,min]=t.split(":");
+  return new Date(yyyy,mm-1,dd,hh,min);
 }
 
-function init([fleet,util,service,incidents,bookRaw]){
+function init([fleet,util,service,incidents,raw]){
 
   /* ===== FLOTTA ===== */
-  const fleetCards=document.getElementById("fleetCards");
   fleetCards.innerHTML+=card("Flotta Totale",fleet.length);
-
   util.forEach(u=>{
     fleetCards.innerHTML+=card(
       "Occupazione "+u["Branch Offices"],
       (u.Occupation*100).toFixed(1)+"%"
     );
   });
-
   const avg=util.reduce((s,u)=>s+u.Occupation,0)/util.length;
   fleetCards.innerHTML+=card("Occupazione Media",(avg*100).toFixed(1)+"%");
 
-  drawFleetCharts(fleet,service);
+  charts.fleetProvider=new Chart(fleetProviderChart,{
+    type:"pie",
+    data:{
+      labels:Object.keys(group(fleet,"Provider")),
+      datasets:[{data:Object.values(group(fleet,"Provider"))}]
+    }
+  });
 
-  /* ===== PRENOTAZIONI ===== */
-  const bookings=bookRaw.map(b=>({
-    branch:b["Branch"]||b["Branch Office"]||"N/D",
-    agent:b["Agent"]||b["Created by"]||"N/D",
-    revenue:Number(b["Revenue"]||b["Total price"]||0),
-    ancillary:Number(b["Ancillaries"]||0),
-    date:parseDate(b["Date"]||b["Creation date"]),
-    channel:b["Channel"]||"Altro",
-    provider:b["Provider"]||"Altro"
+  charts.service=new Chart(serviceChart,{
+    type:"bar",
+    data:{
+      labels:Object.keys(group(service,"Type")),
+      datasets:[{data:Object.values(group(service,"Type"))}]
+    }
+  });
+
+  /* ===== NORMALIZZAZIONE BOOKINGS (CORRETTA) ===== */
+  const bookings=raw.map(b=>({
+    branch:b["brach office"]?.trim(),
+    agent:b.agent?.trim(),
+    provider:b.Provider,
+    channel:b.channel,
+    revenue:Number(b.revenue||0),
+    ancillaries:Number(b["Ancillaries vendute"]||0),
+    date:parseDateTime(b.from)
   }));
 
   populate(branchFilter,bookings.map(b=>b.branch));
@@ -163,54 +171,32 @@ function init([fleet,util,service,incidents,bookRaw]){
       if(toDate.value && b.date>new Date(toDate.value)) return false;
       return true;
     });
+
     updateKPIs(f,incidents);
-    drawCommercialCharts(f);
+    drawCharts(f);
     updateTable(f);
   }
   apply();
 }
 
-/* ===== FLOTTA CHART ===== */
-function drawFleetCharts(fleet,service){
-  charts.fleetProvider=new Chart(fleetProviderChart,{
-    type:"pie",
-    data:{
-      labels:Object.keys(group(fleet,"Provider")),
-      datasets:[{data:Object.values(group(fleet,"Provider")),backgroundColor:[COLORS.primary,COLORS.secondary,COLORS.accent]}]
-    }
-  });
-
-  charts.service=new Chart(serviceChart,{
-    type:"bar",
-    data:{
-      labels:Object.keys(group(service,"Type")),
-      datasets:[{data:Object.values(group(service,"Type")),backgroundColor:COLORS.secondary}]
-    }
-  });
-}
-
-/* ===== KPI ===== */
 function updateKPIs(d,inc){
   const rev=d.reduce((s,b)=>s+b.revenue,0);
-  const days=[...new Set(d.map(b=>b.date?.toISOString()))].length||1;
+  const days=[...new Set(d.map(b=>b.date.toISOString().slice(0,10)))].length||1;
   kpiRevenue.textContent="€ "+rev.toFixed(2);
   kpiRevDay.textContent="€ "+(rev/days).toFixed(2);
   kpiBookings.textContent=d.length;
-  kpiAnc.textContent="€ "+d.reduce((s,b)=>s+b.ancillary,0).toFixed(2);
+  kpiAnc.textContent="€ "+d.reduce((s,b)=>s+b.ancillaries,0).toFixed(2);
   kpiInc.textContent="€ "+inc.reduce((s,i)=>s+(i["Total price"]||0),0).toFixed(2);
 }
 
-/* ===== COMMERCIAL CHART ===== */
-function drawCommercialCharts(d){
+function drawCharts(d){
   Object.values(charts).forEach(c=>c&&c.destroy?.());
 
   charts.channel=new Chart(chartChannel,{
     type:"doughnut",
     data:{
       labels:Object.keys(group(d,"channel")),
-      datasets:[{data:Object.values(group(d,"channel")),
-        backgroundColor:Object.keys(group(d,"channel")).map(l=>l.toLowerCase().includes("walk")?COLORS.accent:COLORS.secondary)
-      }]
+      datasets:[{data:Object.values(group(d,"channel"))}]
     }
   });
 
@@ -218,25 +204,25 @@ function drawCommercialCharts(d){
     type:"bar",
     data:{
       labels:Object.keys(group(d,"provider")),
-      datasets:[{data:Object.values(group(d,"provider")),backgroundColor:COLORS.primary}]
+      datasets:[{data:Object.values(group(d,"provider"))}]
     }
   });
 
   const daily={};
   d.forEach(b=>{
-    if(!b.date) return;
     const k=b.date.toISOString().slice(0,10);
     daily[k]=(daily[k]||0)+1;
   });
 
   charts.time=new Chart(chartTime,{
     type:"line",
-    data:{labels:Object.keys(daily),
-      datasets:[{data:Object.values(daily),label:"Prenotazioni",borderColor:COLORS.primary,fill:false}]}
+    data:{
+      labels:Object.keys(daily),
+      datasets:[{data:Object.values(daily),label:"Prenotazioni"}]
+    }
   });
 }
 
-/* ===== TABLE ===== */
 function updateTable(d){
   perfTable.innerHTML="";
   const g={};
@@ -246,13 +232,15 @@ function updateTable(d){
     g[k].r+=b.revenue; g[k].c++;
   });
   Object.values(g).forEach(x=>{
-    perfTable.innerHTML+=`<tr><td>${x.b}</td><td>${x.a}</td><td>€ ${x.r.toFixed(2)}</td><td>${x.c}</td></tr>`;
+    perfTable.innerHTML+=`<tr>
+      <td>${x.b}</td><td>${x.a}</td>
+      <td>€ ${x.r.toFixed(2)}</td><td>${x.c}</td>
+    </tr>`;
   });
 }
 
-/* ===== UTIL ===== */
 function card(t,v){return `<div class="card"><h4>${t}</h4><span>${v}</span></div>`}
-function populate(el,arr){[...new Set(arr)].sort().forEach(v=>el.innerHTML+=`<option>${v}</option>`)}
+function populate(el,arr){[...new Set(arr.filter(Boolean))].sort().forEach(v=>el.innerHTML+=`<option>${v}</option>`)}
 function group(d,k){return d.reduce((o,b)=>{o[b[k]]=(o[b[k]]||0)+1;return o},{})}
 </script>
 
