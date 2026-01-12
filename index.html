@@ -17,64 +17,22 @@ body{
 h1{font-size:26px}
 h2{margin:30px 0 15px;font-size:18px;font-weight:600}
 section{margin-bottom:36px}
-
 .filter-bar{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  padding:14px;
-  background:#ffffffcc;
-  border-radius:12px;
-  box-shadow:0 4px 14px rgba(0,0,0,.06);
+  display:flex;gap:10px;flex-wrap:wrap;
+  background:#fff;padding:14px;border-radius:12px;
 }
-
-select,input[type=date]{
-  padding:8px 10px;
-  border-radius:8px;
-  border:1px solid #d1d5db;
-  font-size:13px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:20px;
-}
-
-.card{
-  background:#fff;
-  padding:18px;
-  border-radius:14px;
-  box-shadow:0 8px 24px rgba(0,0,0,.06);
-}
-.card h4{margin:0;font-size:13px;color:#6b7280}
-.card span{font-size:28px;font-weight:700;margin-top:6px;display:block}
-
+select,input[type=date]{padding:8px;border-radius:8px;border:1px solid #d1d5db}
 .chart-box{
-  background:#fff;
-  padding:14px;
-  border-radius:14px;
+  background:#fff;padding:14px;border-radius:14px;
   box-shadow:0 8px 24px rgba(0,0,0,.06);
   height:420px;
 }
-
 table{
-  width:100%;
-  border-collapse:collapse;
-  background:#fff;
-  border-radius:14px;
-  overflow:hidden;
-  box-shadow:0 8px 24px rgba(0,0,0,.06);
+  width:100%;border-collapse:collapse;background:#fff;
+  border-radius:14px;overflow:hidden;
 }
-th,td{
-  padding:12px;
-  border-bottom:1px solid #e5e7eb;
-}
-th{
-  background:#f3f6fb;
-  text-transform:uppercase;
-  font-size:12px;
-}
+th,td{padding:12px;border-bottom:1px solid #e5e7eb}
+th{background:#f3f6fb;font-size:12px;text-transform:uppercase}
 </style>
 </head>
 
@@ -85,16 +43,6 @@ th{
 <section class="filter-bar">
   <label>Da</label><input type="date" id="fromDate">
   <label>A</label><input type="date" id="toDate">
-  <select id="branchFilter"><option value="">Tutti i Branch</option></select>
-</section>
-
-<section>
-<h2>KPI Commerciali</h2>
-<div class="grid">
-  <div class="card"><h4>Revenue Totale</h4><span id="kpiRevenue">–</span></div>
-  <div class="card"><h4>Prenotazioni</h4><span id="kpiBookings">–</span></div>
-  <div class="card"><h4>Ancillaries</h4><span id="kpiAnc">–</span></div>
-</div>
 </section>
 
 <section>
@@ -112,8 +60,8 @@ th{
   <th>Branch</th>
   <th>Prenotazioni</th>
   <th>Revenue Totale</th>
-  <th>Revenue Media</th>
-  <th>% su Totale</th>
+  <th>Rev / Booking</th>
+  <th>Peso %</th>
 </tr>
 </thead>
 <tbody id="perfTable"></tbody>
@@ -122,24 +70,15 @@ th{
 
 <script>
 Chart.defaults.maintainAspectRatio=false;
-
-const COLORS={
-  primary:"#1f3c88",
-  secondary:"#4f81bd",
-  accent:"#f28e2b",
-  dashed:"#9ca3af"
-};
-
+const COLORS={primary:"#1f3c88",secondary:"#4f81bd",fleet:"#9ca3af"};
 let peakChart;
 
-/* ===== LOAD DATA ===== */
 Promise.all([
   fetch("fleet.json").then(r=>r.json()),
   fetch("service.json").then(r=>r.json()),
   fetch("bookings.json").then(r=>r.json())
 ]).then(init);
 
-/* ===== UTILS ===== */
 function parseDateTime(dt){
   const [d,t]=dt.split(" ");
   const [dd,mm,yyyy]=d.split("/");
@@ -147,11 +86,15 @@ function parseDateTime(dt){
   return new Date(yyyy,mm-1,dd,hh,min);
 }
 
+function getMinDate(arr){ return new Date(Math.min(...arr.map(d=>d.getTime()))); }
+function getMaxDate(arr){ return new Date(Math.max(...arr.map(d=>d.getTime()))); }
+
 function buildDailySeries(bookings,from,to){
   const out={};
   const cur=new Date(from);
   while(cur<=to){
-    out[cur.toISOString().slice(0,10)]={count:0,revenue:0};
+    const k=cur.toISOString().slice(0,10);
+    out[k]={count:0,revenue:0};
     cur.setDate(cur.getDate()+1);
   }
   bookings.forEach(b=>{
@@ -164,43 +107,32 @@ function buildDailySeries(bookings,from,to){
   return out;
 }
 
-function movingAverage(values,window){
-  return values.map((_,i)=>{
-    const slice=values.slice(Math.max(0,i-window+1),i+1);
-    return slice.reduce((s,v)=>s+v,0)/slice.length;
+function movingAverage(arr,w){
+  return arr.map((_,i)=>{
+    const s=arr.slice(Math.max(0,i-w+1),i+1);
+    return s.reduce((a,b)=>a+b,0)/s.length;
   });
 }
 
-/* ===== INIT ===== */
 function init([fleet,service,raw]){
-
-  const fleetTotal=fleet.length;
-  const inService=service.length;
-  const fleetAvailable=fleetTotal-inService;
+  const fleetAvailable=fleet.length-service.length;
 
   const bookings=raw.map(b=>({
     branch:b["brach office"],
-    revenue:Number(b.revenue||0),
-    anc:Number(b["Ancillaries vendute"]||0),
+    revenue:+b.revenue||0,
     date:parseDateTime(b.from)
   }));
 
-  branchFilter.innerHTML+=
-    [...new Set(bookings.map(b=>b.branch))].map(b=>`<option>${b}</option>`).join("");
-
-  branchFilter.onchange=apply;
   fromDate.onchange=apply;
   toDate.onchange=apply;
 
   function apply(){
     const f=bookings.filter(b=>{
-      if(branchFilter.value && b.branch!==branchFilter.value) return false;
       if(fromDate.value && b.date<new Date(fromDate.value)) return false;
       if(toDate.value && b.date>new Date(toDate.value)) return false;
       return true;
     });
 
-    updateKPIs(f);
     updatePeak(f,fleetAvailable);
     updateTable(f);
   }
@@ -208,90 +140,61 @@ function init([fleet,service,raw]){
   apply();
 }
 
-/* ===== KPI ===== */
-function updateKPIs(d){
-  kpiRevenue.textContent="€ "+d.reduce((s,b)=>s+b.revenue,0).toFixed(2);
-  kpiBookings.textContent=d.length;
-  kpiAnc.textContent="€ "+d.reduce((s,b)=>s+b.anc,0).toFixed(2);
-}
-
-/* ===== PEAK ===== */
 function updatePeak(d,fleetAvailable){
   if(peakChart) peakChart.destroy();
+  if(d.length===0) return;
 
-  const from=new Date(fromDate.value||Math.min(...d.map(b=>b.date)));
-  const to=new Date(toDate.value||Math.max(...d.map(b=>b.date)));
+  const from=fromDate.value ? new Date(fromDate.value) : getMinDate(d.map(b=>b.date));
+  const to=toDate.value ? new Date(toDate.value) : getMaxDate(d.map(b=>b.date));
 
   const daily=buildDailySeries(d,from,to);
   const labels=Object.keys(daily);
-  const counts=labels.map(l=>daily[l].count);
-  const revenues=labels.map(l=>daily[l].revenue);
+  const counts=labels.map(k=>daily[k].count);
+  const revenues=labels.map(k=>daily[k].revenue);
   const ma7=movingAverage(counts,7);
   const fleetLine=labels.map(()=>fleetAvailable);
 
-  peakChart=new Chart(peakChartEl,{
+  peakChart=new Chart(peakChart,{
     type:"line",
     data:{
       labels,
       datasets:[
-        {
-          label:"Prenotazioni",
-          data:counts,
-          borderColor:COLORS.primary,
-          fill:false,
-          tension:0.3
-        },
-        {
-          label:"Media mobile 7gg",
-          data:ma7,
-          borderColor:COLORS.secondary,
-          borderDash:[6,4],
-          fill:false
-        },
-        {
-          label:"Flotta disponibile",
-          data:fleetLine,
-          borderColor:COLORS.dashed,
-          borderDash:[3,3],
-          fill:false
-        }
+        {label:"Prenotazioni",data:counts,borderColor:COLORS.primary,tension:.3},
+        {label:"Media mobile 7gg",data:ma7,borderColor:COLORS.secondary,borderDash:[6,4]},
+        {label:"Flotta disponibile",data:fleetLine,borderColor:COLORS.fleet,borderDash:[3,3]}
       ]
     },
     options:{
       plugins:{
         tooltip:{
           callbacks:{
-            afterBody:(ctx)=>{
-              const i=ctx[0].dataIndex;
-              return "Revenue: € "+revenues[i].toFixed(2);
-            }
+            afterBody:(ctx)=>"Revenue: € "+revenues[ctx[0].dataIndex].toFixed(2)
           }
         }
-      }
+      },
+      scales:{y:{beginAtZero:true}}
     }
   });
 }
 
-/* ===== TABLE ===== */
 function updateTable(d){
   perfTable.innerHTML="";
-  const totalRev=d.reduce((s,b)=>s+b.revenue,0);
+  const total=d.reduce((s,b)=>s+b.revenue,0);
+  const g={};
 
-  const grouped={};
   d.forEach(b=>{
-    grouped[b.branch]=grouped[b.branch]||{count:0,rev:0};
-    grouped[b.branch].count++;
-    grouped[b.branch].rev+=b.revenue;
+    g[b.branch]=g[b.branch]||{c:0,r:0};
+    g[b.branch].c++; g[b.branch].r+=b.revenue;
   });
 
-  Object.entries(grouped).forEach(([k,v])=>{
+  Object.entries(g).forEach(([k,v])=>{
     perfTable.innerHTML+=`
       <tr>
         <td>${k}</td>
-        <td>${v.count}</td>
-        <td>€ ${v.rev.toFixed(2)}</td>
-        <td>€ ${(v.rev/v.count).toFixed(2)}</td>
-        <td>${((v.rev/totalRev)*100).toFixed(1)}%</td>
+        <td>${v.c}</td>
+        <td>€ ${v.r.toFixed(2)}</td>
+        <td>€ ${(v.r/v.c).toFixed(2)}</td>
+        <td>${((v.r/total)*100).toFixed(1)}%</td>
       </tr>`;
   });
 }
