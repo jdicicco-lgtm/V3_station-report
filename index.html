@@ -285,22 +285,39 @@ function updatePeak(d,fleetAvailable){
 
   charts.peak=new Chart(document.getElementById("peakChart"),{
     type:"line",
-    data:{
-      labels,
-      datasets:[
-        {label:"Prenotazioni",data:counts,borderColor:COLORS.primary,tension:.3},
-        {label:"Media mobile 7gg",data:ma7,borderColor:COLORS.secondary,borderDash:[6,4]},
-        {label:"Flotta disponibile",data:fleetLine,borderColor:COLORS.grey,borderDash:[3,3]}
-      ]
+    datasets:[
+  {
+    label:"Prenotazioni",
+    data:counts,
+    borderColor:COLORS.primary,
+    tension:0.3
+  },
+  {
+    label:"Media mobile 7gg",
+    data:ma7,
+    borderColor:COLORS.secondary,
+    borderDash:[6,4]
+  },
+  {
+    label:"Flotta disponibile",
+    data:fleetLine,
+    borderColor:COLORS.grey,
+    borderDash:[3,3]
+  },
+  {
+    label:"Revenue (hidden)",
+    data:revenues,
+    hidden:true        // 👈 solo per tooltip
+  }
+]
+
     },
    options:{
   scales:{
     y:{
       beginAtZero:true,
-      grace: "30%",        // 🔑 più altezza visiva
-      ticks:{
-        precision:0
-      }
+      grace:"30%",
+      ticks:{ precision:0 }
     }
   },
   plugins:{
@@ -308,13 +325,14 @@ function updatePeak(d,fleetAvailable){
       callbacks:{
         afterBody:(ctx)=>{
           const i = ctx[0].dataIndex;
-          return "Revenue: € " + revenues[i].toFixed(2);
+          const revenue =
+            ctx[0].chart.data.datasets[3].data[i] || 0;
+          return "Revenue: € " + revenue.toFixed(2);
         }
       }
     }
   }
 }
-
 
 function updateTable(d){
   perfTable.innerHTML="";
