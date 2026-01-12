@@ -293,21 +293,28 @@ function updatePeak(d,fleetAvailable){
         {label:"Flotta disponibile",data:fleetLine,borderColor:COLORS.grey,borderDash:[3,3]}
       ]
     },
-    options:{
-      scales:{y:{beginAtZero:true}},
-      plugins:{
-        tooltip:{
-          callbacks:{
-            afterBody:(ctx)=>{
-              const i=ctx[0].dataIndex;
-              return "Revenue: € "+revenues[i].toFixed(2);
-            }
-          }
+   options:{
+  scales:{
+    y:{
+      beginAtZero:true,
+      grace: "30%",        // 🔑 più altezza visiva
+      ticks:{
+        precision:0
+      }
+    }
+  },
+  plugins:{
+    tooltip:{
+      callbacks:{
+        afterBody:(ctx)=>{
+          const i = ctx[0].dataIndex;
+          return "Revenue: € " + revenues[i].toFixed(2);
         }
       }
     }
-  });
+  }
 }
+
 
 function updateTable(d){
   perfTable.innerHTML="";
